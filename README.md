@@ -1,5 +1,6 @@
 # Campus-Scale 5G NR Radio Propagation Dataset
 
+> **Image rendering note:** Keep `README.md` and the `images/` directory at the repository root exactly as shown below. GitHub resolves the figures using repository-relative paths.
 Companion code for the Data in Brief article:
 
 > **A Campus-Scale 5G NR Radio Propagation Dataset Integrating Drive-Test Measurements, 3D Environmental Geometry, and Ray Tracing**
@@ -29,17 +30,17 @@ The released data include:
 
 ### Dataset organization
 
-![Dataset storage structure](docs/images/figure1_dataset_storage_structure.png)
+<p align="center"><img src="doc/images/figure1_dataset_storage_structure.png" alt="Dataset storage structure" width="900"></p>
 
 **Figure 1.** Dataset storage structure used in the companion article.
 
 ### Study environment
 
-![Campus 3D terrain and building scene](docs/images/figure2_campus_3d_scene.png)
+<p align="center"><img src="doc/images/figure2_campus_3d_scene.png" alt="Campus 3D terrain and building scene" width="900"></p>
 
 **Figure 2.** Spatial distribution of the campus 3D terrain and building scene.
 
-![Drive-test trajectories and physical base stations](docs/images/figure3_drive_test_and_base_stations.png)
+<p align="center"><img src="doc/images/figure3_drive_test_and_base_stations.png" alt="Drive-test trajectories and physical base stations" width="900"></p>
 
 **Figure 3.** Twelve drive-test trajectories, measured signal distribution, and locations of the 27 physical base stations.
 
@@ -228,7 +229,7 @@ Per-station propagation products
         +------------------------------+
         |                              |
         v                              v
-Per-station radio maps       Joint best-server radio map
+DEM+1.5 m per-station maps   Joint best-server radio map
                                       |
                                       v
                          Measurement-simulation matching
@@ -297,19 +298,27 @@ The calibration workflow uses the common DEM/building scene, the measured receiv
 
 ## Per-station radio maps
 
-Generate per-station radio maps from the calibrated propagation parameters:
+After parameter calibration, the formal per-station radio maps are generated directly on a terrain-following receiver surface defined by
+
+```text
+receiver height = local DEM elevation + 1.5 m
+```
+
+Generate the radio maps for all physical base stations with:
 
 ```bash
 python run_pipeline.py export-dem --stations all
 ```
 
-Compare the terrain-following receiver-surface workflow with the fixed-height Z-plane workflow:
+For a single-station check:
 
 ```bash
-python run_pipeline.py compare-surfaces --stations all --methods both
+python run_pipeline.py export-dem --stations 3
 ```
 
-The principal per-station products use a 512 m × 512 m region and a 1 m horizontal grid.
+The principal per-station products use a 512 m × 512 m area with a 1 m horizontal grid. Each grid cell therefore represents approximately 1 m × 1 m in the local Blender coordinate system. The receiver elevation is obtained from the DEM at each horizontal grid location and shifted upward by 1.5 m before the Sionna RT calculation.
+
+The generated per-station maps are the formal simulation products used by the downstream measurement–simulation comparison, physical base-station localization, and radio-map reconstruction workflows.
 
 ---
 
@@ -317,11 +326,11 @@ The principal per-station products use a 512 m × 512 m region and a 1 m horizon
 
 The network-scale radio map covers 4000 m × 3000 m with a 1 m horizontal grid.
 
-![Joint best-server radio map](docs/images/figure4_joint_best_server_radio_map.png)
+<p align="center"><img src="doc/images/figure4_joint_best_server_radio_map.png" alt="Joint best-server radio map" width="900"></p>
 
 **Figure 4.** Joint best-server radio map for the 27 physical base stations.
 
-![Joint best-server PCI distribution](docs/images/figure5_joint_best_server_pci.png)
+<p align="center"><img src="doc/images/figure5_joint_best_server_pci.png" alt="Joint best-server PCI distribution" width="900"></p>
 
 **Figure 5.** Spatial distribution of the best-server PCI in the joint radio map.
 
@@ -343,7 +352,7 @@ Full generation:
 python run_pipeline.py export-joint-map
 ```
 
-For each valid grid cell, the workflow records the maximum RSRP among the candidate PCIs and the associated PCI, physical base-station identifier, and sector index.
+The joint map is generated in the same terrain-following DEM + 1.5 m receiver geometry as the per-station maps. For each valid grid cell, the workflow records the maximum RSRP among the candidate PCIs and the associated PCI, physical base-station identifier, and sector index.
 
 ---
 
@@ -363,7 +372,7 @@ Measurement and simulation values are compared only after spatial co-location in
 
 ## Measurement setup
 
-![Vehicle-based measurement setup](docs/images/figure6_measurement_setup.png)
+<p align="center"><img src="doc/images/figure6_measurement_setup.png" alt="Vehicle-based measurement setup" width="900"></p>
 
 **Figure 6.** External mounting of the 5G NR measurement terminal on the vehicle roof and the Cellular-Pro acquisition interface.
 
@@ -386,7 +395,7 @@ Physical base-station reference coordinates are not used during candidate genera
 
 ### Measurement–simulation
 
-This branch uses the same selected receiver coordinates and measured PCI–RSRP observations, together with co-located PCI-specific RSRP sampled from pre-generated Sionna RT maps.
+This branch uses the same selected receiver coordinates and measured PCI–RSRP observations, together with co-located PCI-specific RSRP sampled from the pre-generated DEM + 1.5 m Sionna RT maps.
 
 Physical base-station truth is used only after the final estimate has been produced to calculate localization error.
 
@@ -420,7 +429,7 @@ The main localization metric is the root-mean-square error of the estimated phys
 
 The reconstruction example uses physical base station 3, PCI 558, in a 512 m × 512 m region with a 1 m grid.
 
-![Radio-map reconstruction example](docs/images/figure8_radio_map_reconstruction.png)
+<p align="center"><img src="doc/images/figure8_radio_map_reconstruction.png" alt="Radio-map reconstruction example" width="900"></p>
 
 **Figure 8.** Measurement-only nearest-neighbor reconstruction and measurement–simulation reconstruction at measured sampling ratios of 1%, 5%, and 10%.
 
@@ -439,7 +448,7 @@ The selected measured points are assigned over the valid outdoor grid using 1-ne
 
 ### Measurement–simulation reconstruction
 
-The same selected measured points are combined with a fixed Sionna RT radio map. The selected co-located measurement–simulation pairs are used to align the simulation values, after which the measurement–simulation residuals are reconstructed by 1-NN assignment. Where the simulation map is invalid, the method falls back to the measurement-only prediction.
+The same selected measured points are combined with the corresponding fixed DEM + 1.5 m Sionna RT radio map. The selected co-located measurement–simulation pairs are used to align the simulation values, after which the measurement–simulation residuals are reconstructed by 1-NN assignment. Where the simulation map is invalid, the method falls back to the measurement-only prediction.
 
 ### Progressive sampling
 
