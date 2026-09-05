@@ -1,0 +1,12 @@
+{
+  "description": "BlenderGIS EPSG:3857 scene origin derived from the campus scene used by ground.ply",
+  "source_crs": "EPSG:4326",
+  "projected_crs": "EPSG:3857",
+  "scene_origin_projected_x": 11449067.407478333,
+  "scene_origin_projected_y": 2854699.9117279053,
+  "blender_x_scale": 1.0,
+  "blender_y_scale": 1.0,
+  "blender_x_offset_m": 0.0,
+  "blender_y_offset_m": 0.0,
+  "receiver_height_agl_m": 1.5
+}
