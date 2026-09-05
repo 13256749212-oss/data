@@ -30,17 +30,17 @@ The released data include:
 
 ### Dataset organization
 
-<p align="center"><img src="doc/images/figure1_dataset_storage_structure.png" alt="Dataset storage structure" width="900"></p>
+<p align="center"><img src="docs/images/figure1_dataset_storage_structure.png" alt="Dataset storage structure" width="900"></p>
 
 **Figure 1.** Dataset storage structure used in the companion article.
 
 ### Study environment
 
-<p align="center"><img src="doc/images/figure2_campus_3d_scene.png" alt="Campus 3D terrain and building scene" width="900"></p>
+<p align="center"><img src="docs/images/figure2_campus_3d_scene.png" alt="Campus 3D terrain and building scene" width="900"></p>
 
 **Figure 2.** Spatial distribution of the campus 3D terrain and building scene.
 
-<p align="center"><img src="doc/images/figure3_drive_test_and_base_stations.png" alt="Drive-test trajectories and physical base stations" width="900"></p>
+<p align="center"><img src="docs/images/figure3_drive_test_and_base_stations.png" alt="Drive-test trajectories and physical base stations" width="900"></p>
 
 **Figure 3.** Twelve drive-test trajectories, measured signal distribution, and locations of the 27 physical base stations.
 
@@ -326,11 +326,11 @@ The generated per-station maps are the formal simulation products used by the do
 
 The network-scale radio map covers 4000 m × 3000 m with a 1 m horizontal grid.
 
-<p align="center"><img src="doc/images/figure4_joint_best_server_radio_map.png" alt="Joint best-server radio map" width="900"></p>
+<p align="center"><img src="docs/images/figure4_joint_best_server_radio_map.png" alt="Joint best-server radio map" width="900"></p>
 
 **Figure 4.** Joint best-server radio map for the 27 physical base stations.
 
-<p align="center"><img src="doc/images/figure5_joint_best_server_pci.png" alt="Joint best-server PCI distribution" width="900"></p>
+<p align="center"><img src="docs/images/figure5_joint_best_server_pci.png" alt="Joint best-server PCI distribution" width="900"></p>
 
 **Figure 5.** Spatial distribution of the best-server PCI in the joint radio map.
 
@@ -372,7 +372,7 @@ Measurement and simulation values are compared only after spatial co-location in
 
 ## Measurement setup
 
-<p align="center"><img src="doc/images/figure6_measurement_setup.png" alt="Vehicle-based measurement setup" width="900"></p>
+<p align="center"><img src="docs/images/figure6_measurement_setup.png" alt="Vehicle-based measurement setup" width="900"></p>
 
 **Figure 6.** External mounting of the 5G NR measurement terminal on the vehicle roof and the Cellular-Pro acquisition interface.
 
@@ -429,7 +429,7 @@ The main localization metric is the root-mean-square error of the estimated phys
 
 The reconstruction example uses physical base station 3, PCI 558, in a 512 m × 512 m region with a 1 m grid.
 
-<p align="center"><img src="doc/images/figure8_radio_map_reconstruction.png" alt="Radio-map reconstruction example" width="900"></p>
+<p align="center"><img src="docs/images/figure8_radio_map_reconstruction.png" alt="Radio-map reconstruction example" width="900"></p>
 
 **Figure 8.** Measurement-only nearest-neighbor reconstruction and measurement–simulation reconstruction at measured sampling ratios of 1%, 5%, and 10%.
 
