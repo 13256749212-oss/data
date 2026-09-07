@@ -1,643 +1,218 @@
 # Campus-Scale 5G NR Radio Propagation Dataset
 
-> **Image rendering note:** Keep `README.md` and the `images/` directory at the repository root exactly as shown below. GitHub resolves the figures using repository-relative paths.
-Companion code for the Data in Brief article:
+This repository contains the data-processing and application code associated with a campus-scale 5G NR radio-propagation dataset collected at the Chenggong Campus of Yunnan University, Kunming, China.
 
-> **A Campus-Scale 5G NR Radio Propagation Dataset Integrating Drive-Test Measurements, 3D Environmental Geometry, and Ray Tracing**
+The dataset combines **vehicle-based 5G NR measurements**, **3D terrain and building geometry**, **27 physical base stations with 79 PCIs**, and **Sionna RT radio maps** in a common spatial coordinate system. It also includes application workflows for measurement–simulation comparison, base-station localization, and sparse radio-map reconstruction.
 
-This repository provides the processing, ray-tracing, evaluation, localization, reconstruction, and visualization workflows associated with a campus-scale 5G NR radio propagation dataset collected at the Chenggong Campus of Yunnan University, Kunming, China.
-
-The repository is intended to support reproducible use of the released dataset and the application examples reported in the article. The large measurement files, generated radio maps, and other publication data products should be obtained from the archival dataset repository referenced by the article.
-
----
-
-## Overview
-
-The dataset combines road measurements, a common 3D spatial environment, physical base-station information, and Sionna RT propagation products in the same coordinate system.
-
-The released data include:
-
-- 12 vehicle-based 5G NR drive-test sessions;
-- 14,355 raw measurement records;
-- a digital elevation model (DEM) and 3D building geometry;
-- 27 field-verified physical base stations;
-- 79 Physical Cell Identifiers (PCIs);
-- calibrated Sionna RT propagation products;
-- per-station 512 m × 512 m radio maps with 1 m horizontal resolution;
-- a 4000 m × 3000 m joint best-server radio map with 1 m horizontal resolution;
-- 10,383 co-located measurement–simulation grid samples;
-- application examples for physical base-station localization and sparse radio-map reconstruction.
-
-### Dataset organization
-
-<p align="center"><img src="docs/images/figure1_dataset_storage_structure.png" alt="Dataset storage structure" width="900"></p>
-
-**Figure 1.** Dataset storage structure used in the companion article.
-
-### Study environment
-
-<p align="center"><img src="docs/images/figure2_campus_3d_scene.png" alt="Campus 3D terrain and building scene" width="900"></p>
-
-**Figure 2.** Spatial distribution of the campus 3D terrain and building scene.
-
-<p align="center"><img src="docs/images/figure3_drive_test_and_base_stations.png" alt="Drive-test trajectories and physical base stations" width="900"></p>
-
-**Figure 3.** Twelve drive-test trajectories, measured signal distribution, and locations of the 27 physical base stations.
-
----
-
-## Data summary
-
-| Item | Description |
-|---|---|
-| Study area | Chenggong Campus, Yunnan University, Kunming, China |
-| Measurement sessions | 12 vehicle-based drive tests |
-| Raw measurement records | 14,355 |
-| Network | China Mobile 5G NR n41 |
-| Center ARFCN | 513000 |
-| SSB ARFCN | 504990 |
-| Center frequency | 2.565 GHz |
-| Channel bandwidth | 100 MHz |
-| Receiver height | approximately 1.5 m above local ground |
-| Physical base stations | 27 |
-| PCIs | 79 |
-| 3D environment | DEM and main campus buildings |
-| Coordinate workflow | WGS84 → EPSG:3857 → local Blender metric coordinates |
-| Per-station radio maps | 512 m × 512 m, 1 m grid |
-| Joint best-server radio map | 4000 m × 3000 m, 1 m grid |
-| Co-located measurement–simulation samples | 10,383 |
-| Main propagation quantity | RSRP |
-| Ray-tracing platform | Sionna RT |
-
-Physical base station 22 is treated as a single-PCI omnidirectional station with PCI 800. The remaining stations use the field-verified PCI/site associations provided with the repository configuration files.
-
----
-
-## Repository scope
-
-This GitHub repository contains the code needed to reproduce the main processing and application workflows described in the article:
-
-- measurement coordinate alignment;
-- multi-PCI measurement expansion;
-- measurement preprocessing and aggregation;
-- Sionna RT scene preparation;
-- base-station parameter calibration;
-- per-station radio-map generation;
-- joint best-server radio-map generation;
-- measurement–simulation matching and evaluation;
-- physical base-station localization;
-- radio-map reconstruction;
-- publication-oriented visualization;
-- automated tests.
-
-The complete published dataset should be downloaded separately from the archival repository associated with the article.
-
----
+<p align="center">
+  <img src="docs/images/figure1_dataset_storage_structure.png" width="820" alt="Dataset structure">
+</p>
 
 ## Repository structure
 
 ```text
 .
-├── run_pipeline.py
-├── check_project_layout.py
-├── environment.yml
-├── requirements.txt
-├── README.md
-├── assets/
-│   ├── ground.ply
-│   └── ynu_chenggong_campus-001.ply
-├── config/
-│   ├── base_station_pci_mapping.csv
-│   ├── station_catalog_27stations.csv
-│   └── coordinate_alignment.json
+├── data/                       # Measurement data and processed measurement tables
+├── assets/                     # 3D terrain and building meshes
+├── config/                     # Base-station, PCI and coordinate-alignment information
 ├── workflows/
-│   ├── preprocessing/
-│   ├── parameter_calibration/
-│   ├── radio_map/
-│   ├── evaluation/
-│   ├── localization/
-│   ├── reconstruction/
-│   └── visualization/
-├── tests/
-├── tools/
-├── scripts/
-├── data/
-└── outputs/
+│   ├── preprocessing/          # Coordinate alignment and measurement preprocessing
+│   ├── parameter_calibration/  # Sionna RT parameter calibration
+│   ├── radio_map/              # Per-station and joint radio-map generation
+│   ├── evaluation/             # Measurement–simulation comparison
+│   ├── localization/           # Physical base-station localization
+│   ├── reconstruction/         # Sparse radio-map reconstruction
+│   └── visualization/          # Dataset and publication figures
+├── scripts/windows/            # Optional Windows batch wrappers
+├── docs/images/                # Figures used in the paper and README
+├── tools/                      # Auxiliary repository tools
+└── outputs/                    # Generated results after running the workflows
 ```
 
-`run_pipeline.py` is the recommended entry point for the complete workflow.
+## Main components
 
----
+| Part | Main contents | Purpose |
+|---|---|---|
+| `data/` | 12 raw Cellular-Pro CSV files, aligned measurements and processed PCI–RSRP tables | Provides the field-measurement observations used by all downstream workflows |
+| `assets/` | `ground.ply` and campus building mesh | Provides the terrain and building geometry used by Sionna RT |
+| `config/` | Physical base-station catalogue, PCI/site mapping and coordinate-alignment metadata | Connects measurements, physical sites and the 3D scene |
+| `workflows/preprocessing/` | Coordinate conversion, DEM height extraction, multi-PCI expansion and spatial aggregation | Converts raw drive-test files into analysis-ready measurement tables |
+| `workflows/parameter_calibration/` | Sionna RT calibration code | Estimates station/sector parameters by comparing simulation with field measurements |
+| `workflows/radio_map/` | Single-station and network-scale radio-map generation | Produces per-station radio maps and the joint best-server map |
+| `workflows/evaluation/` | Measurement–simulation matching and error calculation | Evaluates the joint radio map on co-located measurement samples |
+| `workflows/localization/` | Measurement-only and measurement–simulation localization | Provides the physical base-station localization application example |
+| `workflows/reconstruction/` | Measurement-only and measurement–simulation reconstruction | Provides the sparse radio-map reconstruction application example |
+| `workflows/visualization/` | Dataset overview and publication plotting scripts | Generates figures used to inspect and present the dataset |
 
-## Data placement
+## Installation
 
-After downloading the archived dataset, place the required files under the repository root using the following code-facing structure:
+Python 3.10 is recommended. Install the main dependencies with:
+
+```bash
+pip install numpy pandas scipy matplotlib trimesh pyproj shapely scikit-learn pyyaml torch sionna
+```
+
+A CUDA-capable NVIDIA GPU is recommended for the full Sionna RT calibration and radio-map generation workflows.
+
+## Workflow
+
+Run all Python commands from the repository root.
+
+### 1. Prepare the measurements
+
+```bash
+python workflows/preprocessing/01_align_measurements_to_blender.py
+python workflows/preprocessing/02_extract_multi_pci_rsrp.py
+python workflows/preprocessing/03_build_analysis_tables.py
+```
+
+`01` aligns raw drive-test coordinates with the Blender scene and adds terrain/receiver height. `02` expands all PCI–RSRP pairs. `03` aggregates the aligned records into analysis-ready tables.
+
+Main results:
 
 ```text
-data/
-├── raw_measurements/
-│   └── *.csv
-├── aligned_measurements/
-│   └── *_with_blender_xyz.csv
-└── processed/
-    ├── cell_pci_rsrp_long_27stations.csv
-    ├── cell_pci_rsrp_1m_calibration.csv
-    └── cell_pci_rsrp_2p77m_localization.csv
+data/aligned_measurements/
+data/processed/extracted/
+data/processed/cell_pci_rsrp_long_27stations.csv
+data/processed/cell_pci_rsrp_1m_calibration.csv
+data/processed/cell_pci_rsrp_2p77m_localization.csv
 ```
 
-The exact public archive may use publication-facing directory names. In that case, copy or link the corresponding archived files into the paths above before running the code.
+### 2. Calibrate the physical base stations
 
-Generated products are written under:
+```bash
+python workflows/parameter_calibration/run_27station_parameter_calibration.py
+```
+
+Runs calibration for all physical stations, compares Sionna RT predictions with field measurements, and saves the selected station/sector calibration results and summaries.
+
+Main results:
 
 ```text
-outputs/
+outputs/parameter_calibration/
+├── all_27stations_summary.csv
+├── estimated_initial_directions_27stations.csv
+└── station_*/
 ```
 
----
+### 3. Generate the radio maps
 
-## Software environment
-
-### Recommended setup
-
-- Windows 10/11
-- Python 3.10
-- Miniconda or Anaconda
-- NVIDIA GPU for full Sionna RT calculations
-- Sionna 1.2.2
-
-Create the environment:
+Per-station radio maps:
 
 ```bash
-conda env create -f environment.yml
-conda activate sionna_env
+python workflows/radio_map/export_bestparam_radio_maps.py
 ```
 
-Alternatively:
+Uses the calibrated station parameters to export the per-station radio-map products used by the dataset.
+
+Network-scale joint best-server map:
 
 ```bash
-python -m pip install -r requirements.txt
-python -m pip install sionna==1.2.2
+python workflows/radio_map/generate_joint_best_server_4000x3000.py
 ```
 
-Verify the core environment:
+Combines all station products on one grid and generates the network-scale best-server RSRP, serving-station, and best-server PCI maps.
 
-```bash
-python -c "import numpy, pandas, scipy, trimesh, pyproj, sionna; print('Environment OK')"
-```
-
----
-
-## Project check
-
-Run:
-
-```bash
-python run_pipeline.py --help
-python run_pipeline.py check
-```
-
-The project checker verifies the scene meshes, station catalog, base-station/PCI mapping, coordinate-alignment metadata, measurement-data availability, processed-table schemas, and generated downstream products.
-
----
-
-## Processing workflow
-
-The main processing sequence is:
+Main results:
 
 ```text
-Raw Cellular-Pro CSV files
-        |
-        v
-Coordinate alignment
-WGS84 -> EPSG:3857 -> local Blender coordinates
-        |
-        v
-Multi-PCI / RSRP expansion
-        |
-        v
-Processed measurement tables
-        |
-        +------------------------------+
-        |                              |
-        v                              v
-Base-station parameter            Measurement analysis
-calibration with Sionna RT
-        |
-        v
-Per-station propagation products
-        |
-        +------------------------------+
-        |                              |
-        v                              v
-DEM+1.5 m per-station maps   Joint best-server radio map
-                                      |
-                                      v
-                         Measurement-simulation matching
-                                      |
-                         +------------+------------+
-                         |                         |
-                         v                         v
-               Base-station localization   Radio-map reconstruction
+outputs/bestparam_radio_maps_512m/
+outputs/joint_best_server_4000x3000/
+├── joint_best_server_27stations_4000x3000.npz
+├── joint_best_server_rsrp_4000x3000.png
+├── joint_best_station_id_4000x3000.png
+└── joint_best_pci_4000x3000.png
 ```
 
----
-
-## Measurement preprocessing
-
-If the archived dataset already contains the processed tables, this stage can be skipped.
-
-Rebuild the preprocessing products with:
+### 4. Compare the joint map with field measurements
 
 ```bash
-python run_pipeline.py prepare-data
+python workflows/evaluation/compare_joint_map_with_measurements.py
 ```
 
-Force regeneration:
+Matches field samples to the joint radio-map grid, extracts simulated values at the same locations, and reports measurement–simulation comparison metrics and figures.
 
-```bash
-python run_pipeline.py prepare-data --force
-```
-
-Individual stages can also be run separately:
-
-```bash
-python run_pipeline.py align
-python run_pipeline.py extract
-python run_pipeline.py preprocess
-```
-
-The processing workflow includes coordinate conversion, terrain-height lookup, receiver-height assignment, multi-PCI/RSRP expansion, physical base-station association, and generation of analysis-ready measurement tables.
-
----
-
-## Base-station parameter calibration
-
-Physical base-station locations and PCI associations are based on field verification. Transmitter parameters that were not directly available are calibrated against road-measured RSRP.
-
-Quick check for one station:
-
-```bash
-python run_pipeline.py calibrate --stations 3 --quick
-```
-
-Run the calibration workflow for all physical base stations:
-
-```bash
-python run_pipeline.py calibrate --stations all
-```
-
-The calibration configuration is stored in:
+Main results:
 
 ```text
-workflows/parameter_calibration/config.yaml
+outputs/joint_map_measurement_comparison/
+├── matched_measurement_vs_joint_map.csv
+├── comparison_metrics.csv
+└── comparison figures
 ```
 
-The calibration workflow uses the common DEM/building scene, the measured receiver coordinates, and PCI-specific measured RSRP.
+### 5. Run the localization example
 
----
+```bash
+python workflows/localization/run_27stations_two_branch_localization.py
+```
 
-## Per-station radio maps
+Runs the localization application for the 27 physical stations using the measurement-only and measurement–simulation branches and exports their RMSE comparison.
 
-After parameter calibration, the formal per-station radio maps are generated directly on a terrain-following receiver surface defined by
+Main result:
 
 ```text
-receiver height = local DEM elevation + 1.5 m
+outputs/localization_two_branch_rmse_only/localization_rmse_comparison.csv
 ```
 
-Generate the radio maps for all physical base stations with:
+### 6. Run the radio-map reconstruction example
 
 ```bash
-python run_pipeline.py export-dem --stations all
+python workflows/reconstruction/run_reconstruction.py
 ```
 
-For a single-station check:
+Reconstructs radio maps from progressively sampled measurements, evaluates measurement-only and measurement–simulation branches, and saves reconstruction metrics and result figures.
 
-```bash
-python run_pipeline.py export-dem --stations 3
-```
-
-The principal per-station products use a 512 m × 512 m area with a 1 m horizontal grid. Each grid cell therefore represents approximately 1 m × 1 m in the local Blender coordinate system. The receiver elevation is obtained from the DEM at each horizontal grid location and shifted upward by 1.5 m before the Sionna RT calculation.
-
-The generated per-station maps are the formal simulation products used by the downstream measurement–simulation comparison, physical base-station localization, and radio-map reconstruction workflows.
-
----
-
-## Joint best-server radio map
-
-The network-scale radio map covers 4000 m × 3000 m with a 1 m horizontal grid.
-
-<p align="center"><img src="docs/images/figure4_joint_best_server_radio_map.png" alt="Joint best-server radio map" width="900"></p>
-
-**Figure 4.** Joint best-server radio map for the 27 physical base stations.
-
-<p align="center"><img src="docs/images/figure5_joint_best_server_pci.png" alt="Joint best-server PCI distribution" width="900"></p>
-
-**Figure 5.** Spatial distribution of the best-server PCI in the joint radio map.
-
-Check the job configuration:
-
-```bash
-python run_pipeline.py export-joint-map --dry-run
-```
-
-Quick validation:
-
-```bash
-python run_pipeline.py export-joint-map --quick
-```
-
-Full generation:
-
-```bash
-python run_pipeline.py export-joint-map
-```
-
-The joint map is generated in the same terrain-following DEM + 1.5 m receiver geometry as the per-station maps. For each valid grid cell, the workflow records the maximum RSRP among the candidate PCIs and the associated PCI, physical base-station identifier, and sector index.
-
----
-
-## Measurement–simulation matching
-
-Evaluate co-located measurement and simulation samples with:
-
-```bash
-python run_pipeline.py compare-joint-map
-```
-
-The article reports 10,383 co-located grid samples with valid measured and simulated RSRP.
-
-Measurement and simulation values are compared only after spatial co-location in the common coordinate system.
-
----
-
-## Measurement setup
-
-<p align="center"><img src="docs/images/figure6_measurement_setup.png" alt="Vehicle-based measurement setup" width="900"></p>
-
-**Figure 6.** External mounting of the 5G NR measurement terminal on the vehicle roof and the Cellular-Pro acquisition interface.
-
-The measurement terminal was externally mounted on the vehicle roof, with the receiver approximately 1.5 m above the local ground during the drive tests.
-
----
-
-## Application example: physical base-station localization
-
-The localization application compares two branches using the same selected receiver locations.
-
-### Measurement-only
-
-This branch uses:
-
-- selected measured receiver coordinates;
-- corresponding measured PCI–RSRP observations.
-
-Physical base-station reference coordinates are not used during candidate generation or scoring.
-
-### Measurement–simulation
-
-This branch uses the same selected receiver coordinates and measured PCI–RSRP observations, together with co-located PCI-specific RSRP sampled from the pre-generated DEM + 1.5 m Sionna RT maps.
-
-Physical base-station truth is used only after the final estimate has been produced to calculate localization error.
-
-Run the 10–15 receiver-location experiment:
-
-```bash
-python run_pipeline.py localize-sweep \
-    --point-counts 10,11,12,13,14,15 \
-    --random-trials 10
-```
-
-A single receiver-location count can also be evaluated:
-
-```bash
-python run_pipeline.py localize \
-    --points-per-station 10 \
-    --random-trials 10
-```
-
-The formal comparison output is written under:
+Main results are written to:
 
 ```text
-outputs/localization_two_branch_rmse_only/
+outputs/radio_map_reconstruction_nn_single_progressive/
 ```
 
-The main localization metric is the root-mean-square error of the estimated physical base-station positions.
+The reconstruction workflow compares the **measurement-only** and **measurement–simulation** branches over progressively increasing measurement sampling ratios.
 
----
+## Example results from the dataset
 
-## Application example: radio-map reconstruction
+### Drive-test measurements and physical base stations
 
-The reconstruction example uses physical base station 3, PCI 558, in a 512 m × 512 m region with a 1 m grid.
+<p align="center">
+  <img src="docs/images/figure3_drive_test_and_base_stations.png" width="900" alt="Drive-test measurements and physical base stations">
+</p>
 
-<p align="center"><img src="docs/images/figure8_radio_map_reconstruction.png" alt="Radio-map reconstruction example" width="900"></p>
+### Joint best-server radio map for the 27 physical base stations
 
-**Figure 8.** Measurement-only nearest-neighbor reconstruction and measurement–simulation reconstruction at measured sampling ratios of 1%, 5%, and 10%.
+<p align="center">
+  <img src="docs/images/figure4_joint_best_server_radio_map.png" width="900" alt="Joint best-server radio map">
+</p>
 
-Run:
+### Best-server PCI in the joint radio map
 
-```bash
-python run_pipeline.py reconstruct \
-    --station-id 3 \
-    --pci 558 \
-    --simulation-mode compare
-```
+<p align="center">
+  <img src="docs/images/figure5_joint_best_server_pci.png" width="900" alt="Joint best-server PCI map">
+</p>
 
-### Measurement-only reconstruction
+### Sparse radio-map reconstruction
 
-The selected measured points are assigned over the valid outdoor grid using 1-nearest-neighbor (1-NN) reconstruction.
+<p align="center">
+  <img src="docs/images/figure8_radio_map_reconstruction.png" width="900" alt="Radio-map reconstruction example">
+</p>
 
-### Measurement–simulation reconstruction
-
-The same selected measured points are combined with the corresponding fixed DEM + 1.5 m Sionna RT radio map. The selected co-located measurement–simulation pairs are used to align the simulation values, after which the measurement–simulation residuals are reconstructed by 1-NN assignment. Where the simulation map is invalid, the method falls back to the measurement-only prediction.
-
-### Progressive sampling
-
-The sampling sets are constructed progressively from 1% to 10% of the available measured points. The selection procedure uses the geometry of the valid domain and measurements that have already been acquired. It does not use the final reconstruction RMSE as a selection criterion.
-
-Each sampling percentage generates one reconstructed map for each branch.
-
-### Reconstruction evaluation
-
-The primary RMSE is calculated over all finite outdoor cells in the common 512 m × 512 m reference domain.
-
-The plotting interval and quantitative evaluation are treated separately. Display limits are used for visualization only.
-
-The principal outputs are written under:
+## Dataset workflow summary
 
 ```text
-outputs/radio_map_reconstruction_nn_fullgrid_two_branch/
+Raw drive-test measurements
+        ↓
+Coordinate alignment + DEM height extraction
+        ↓
+PCI–RSRP expansion and measurement aggregation
+        ↓
+Sionna RT parameter calibration
+        ↓
+Per-station radio maps
+        ↓
+27-station joint best-server radio map
+        ↓
+Measurement–simulation evaluation
+        ↓
+Localization and radio-map reconstruction examples
 ```
-
-Typical outputs include:
-
-```text
-station_03_pci_558/
-├── percent_01/
-├── ...
-├── percent_10/
-├── reconstruction_single_run_metrics.csv
-├── reconstruction_simulation_ablation_comparison.csv
-├── reconstruction_full_grid_evaluation_audit.csv
-├── reconstruction_trend_audit.md
-├── reconstruction_simulation_ablation_rmse.png
-└── reconstruction_maps_1_5_10.png
-```
-
----
-
-## Visualization
-
-Generate measurement figures:
-
-```bash
-python run_pipeline.py visualize-measurements
-```
-
-Generate the output-structure figure:
-
-```bash
-python run_pipeline.py plot-output-structure
-```
-
-Generate the complete dataset visualization set:
-
-```bash
-python run_pipeline.py visualize-dataset
-```
-
----
-
-## Tests
-
-Run the full test suite:
-
-```bash
-python run_pipeline.py test
-```
-
-or:
-
-```bash
-python -m pytest tests
-```
-
-The tests cover coordinate utilities, measurement parsing, calibration-related behavior, localization workflows, sampling logic, simulation-data ablation, reconstruction protocols, and publication-figure generation.
-
----
-
-## Reproducibility notes
-
-For reproducible use of the repository:
-
-1. Use the same measured receiver locations for paired Measurement-only and Measurement–simulation comparisons.
-2. Do not use physical base-station truth during localization candidate generation or scoring.
-3. Do not use the final reconstruction RMSE as a sample-selection criterion.
-4. Use the complete valid outdoor evaluation domain for the formal reconstruction RMSE.
-5. Keep plotting ranges separate from quantitative evaluation.
-6. Record the Git commit, random seed, command line, software environment, and Sionna configuration used for reported results.
-7. Keep generated outputs from different experimental configurations in separate directories.
-8. Archive the exact source snapshot associated with the published data article.
-
----
-
-## Computational considerations
-
-The most computationally demanding stages are:
-
-- calibration of all physical base stations;
-- high-sample Sionna RT calculations;
-- per-station 1 m radio-map generation;
-- generation of the 4000 m × 3000 m joint best-server radio map;
-- repeated localization experiments;
-- high-resolution publication figures.
-
-Use quick or dry-run modes before launching full simulations:
-
-```bash
-python run_pipeline.py calibrate --stations 3 --quick
-python run_pipeline.py export-joint-map --dry-run
-python run_pipeline.py export-joint-map --quick
-```
-
----
-
-## Limitations
-
-The 3D propagation scene primarily represents terrain and the main campus buildings. Vegetation, vehicles, pedestrians, and other transient or small-scale environmental objects are not explicitly modeled.
-
-The physical base-station locations and PCI associations were field verified, while transmitter parameters that were not directly available were calibrated using the measured RSRP.
-
-The localization and reconstruction workflows are application examples for demonstrating reuse of the released data and are not intended to represent optimal algorithms for all environments.
-
----
-
-## Data and code availability
-
-### Dataset
-
-The complete public dataset should be cited and downloaded from the permanent archival repository reported in the article.
-
-- **Dataset repository:** [add permanent repository name]
-- **Dataset DOI:** [add dataset DOI]
-- **Dataset URL:** [add permanent dataset URL]
-
-### Article
-
-- **Journal:** Data in Brief
-- **Article DOI:** [add article DOI after publication]
-
-### Source code
-
-This GitHub repository contains the code companion to the archived dataset.
-
-- **Repository URL:** [add GitHub repository URL]
-
-Replace the bracketed publication metadata after the permanent records have been assigned.
-
----
-
-## Citation
-
-If you use the dataset, please cite the Data in Brief article:
-
-```text
-Sun, J., Yang, T., Chen, Q., Yang, J., Huang, M.
-A Campus-Scale 5G NR Radio Propagation Dataset Integrating Drive-Test Measurements,
-3D Environmental Geometry, and Ray Tracing.
-Data in Brief, [year], [volume/article number].
-https://doi.org/[article DOI]
-```
-
-If the code is used directly, also cite the repository or its archived software record:
-
-```text
-Sun, J., Yang, T., Chen, Q., Yang, J., Huang, M.
-Campus 5G NR Radio Propagation Dataset Code.
-GitHub / archived software record.
-[permanent code URL or DOI]
-```
-
----
-
-## License
-
-Before public release, include explicit license files for both the software repository and the archived dataset.
-
-The software license and the dataset license may differ, but both should be clearly stated and should match the records provided with the publication.
-
----
-
-## Contact
-
-For scientific questions, data issues, or reproducibility questions, please contact the authors using the correspondence information provided in the published Data in Brief article.
-
-For reproducibility issues, please include:
-
-- operating system;
-- Python environment;
-- Sionna installation information;
-- GPU/CUDA information, if applicable;
-- Git commit;
-- exact command used;
-- complete traceback or log;
-- relevant input and output file names.
