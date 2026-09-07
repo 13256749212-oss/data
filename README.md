@@ -5,7 +5,7 @@ This repository contains the data-processing and application code associated wit
 The dataset combines **vehicle-based 5G NR measurements**, **3D terrain and building geometry**, **27 physical base stations with 79 PCIs**, and **Sionna RT radio maps** in a common spatial coordinate system. It also includes application workflows for measurement–simulation comparison, base-station localization, and sparse radio-map reconstruction.
 
 <p align="center">
-  <img src="docs/images/figure1_dataset_storage_structure.png" width="820" alt="Dataset structure">
+  <img src="docs/images/figure1_dataset_storage_structure.svg" width="820" alt="Dataset structure">
 </p>
 
 ## Repository structure
