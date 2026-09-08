@@ -179,16 +179,10 @@ The reconstruction workflow compares the **measurement-only** and **measurementâ
   <img src="docs/images/figure3_drive_test_and_base_stations.png" width="900" alt="Drive-test measurements and physical base stations">
 </p>
 
-### Joint best-server radio map for the 27 physical base stations
+### Joint best-server radio map for the 27 physical base stations  and Best-server PCI in the joint radio map
 
 <p align="center">
   <img src="docs/images/figure4_joint_best_server_radio_map.png" width="900" alt="Joint best-server radio map">
-</p>
-
-### Best-server PCI in the joint radio map
-
-<p align="center">
-  <img src="docs/images/figure5_joint_best_server_pci.png" width="900" alt="Joint best-server PCI map">
 </p>
 
 ### Sparse radio-map reconstruction
