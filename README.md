@@ -53,14 +53,6 @@ Generated products are written to `outputs/` when the workflows are run.
 ## Environment
 
 Python 3.10 is recommended. The ray-tracing workflows require Sionna RT and benefit substantially from a CUDA-capable NVIDIA GPU.
-
-### Conda
-
-```bash
-conda env create -f environment.yml
-conda activate sionna_env
-```
-
 ### pip
 
 ```bash
