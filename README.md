@@ -173,7 +173,7 @@ The reconstruction workflow compares the **measurement-only** and **measurementâ
 
 ## Example results from the dataset
 
-### Drive-test measurements and physical base stations
+### Spatial distribution of the campus 3D terrain and building scene and Drive-test measurements and physical base stations
 
 <p align="center">
   <img src="docs/images/figure3_drive_test_and_base_stations.png" width="900" alt="Drive-test measurements and physical base stations">
