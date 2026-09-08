@@ -270,18 +270,6 @@ Receiver locations per station
 Measurement-only RMSE (m)
 Measurement–simulation RMSE (m)
 ```
-
-The article reports:
-
-| Receiver locations per station | Measurement-only RMSE (m) | Measurement–simulation RMSE (m) |
-|---:|---:|---:|
-| 10 | 198.1775 | 135.0829 |
-| 11 | 189.0067 | 133.1364 |
-| 12 | 180.5589 | 126.9115 |
-| 13 | 174.3096 | 123.1994 |
-| 14 | 165.5261 | 122.7997 |
-| 15 | 160.4853 | 118.8830 |
-
 ### 7. Run the sparse radio-map reconstruction example
 
 The paper example uses physical base station 3 and PCI 558 over a 512 m × 512 m, 1 m-grid region:
