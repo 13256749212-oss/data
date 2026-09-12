@@ -4,7 +4,7 @@ This repository provides the data-processing, ray-tracing, evaluation, localizat
 
 The dataset integrates **12 vehicle-based 5G NR drive-test sessions**, **3D terrain and building geometry**, **27 physical base stations associated with 79 PCIs**, and **Sionna RT radio maps** within a common spatial reference. The released workflows support measurement preprocessing, base-station parameter calibration, per-station and network-scale radio-map generation, measurement–simulation comparison, physical base-station localization, and sparse radio-map reconstruction.
 
-**Dataset DOI:** https://doi.org/10.17632/d5xrrgsj4f.1  
+**Dataset DOI:** https://doi.org/10.17632/7gs87p73sg.2
 
 <p align="center">
   <img src="docs/images/figure1_dataset_storage_structure.svg" width="820" alt="Dataset storage structure">
