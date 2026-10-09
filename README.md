@@ -1,91 +1,134 @@
-# Campus-Scale 5G NR Radio Propagation Dataset
+# Campus-Scale 5G NR Radio Propagation Dataset — Processing and Reproducibility Code
 
-This repository provides the data-processing, ray-tracing, evaluation, localization, and radio-map reconstruction code associated with the campus-scale 5G NR radio propagation dataset collected at the Chenggong Campus of Yunnan University, Kunming, China.
+This repository provides the processing and reproducibility code accompanying the campus-scale 5G NR radio propagation dataset collected at the Chenggong Campus of Yunnan University, Kunming, China.
 
-The dataset integrates **12 vehicle-based 5G NR drive-test sessions**, **3D terrain and building geometry**, **27 physical base stations associated with 79 PCIs**, and **Sionna RT radio maps** within a common spatial reference. The released workflows support measurement preprocessing, base-station parameter calibration, per-station and network-scale radio-map generation, measurement–simulation comparison, physical base-station localization, and sparse radio-map reconstruction.
+The dataset combines **12 vehicle-based 5G NR drive-test sessions**, **3D terrain and building geometry**, **27 physical base stations associated with 79 verified Physical Cell Identifiers (PCIs)**, and **Sionna RT radio-propagation products** in a common spatial reference. The released workflow supports measurement preprocessing, station-parameter calibration, terrain-following per-station radio-map generation, network-wide best-server map generation, calibration-only network residual modeling, cell-level provenance export, and trajectory-disjoint quantitative evaluation.
 
-<p align="center">
-  <img src="docs/images/figure1_dataset_storage_structure.svg" width="820" alt="Dataset storage structure">
-</p>
+- **Dataset (Mendeley Data):** https://doi.org/10.17632/7gs87p73sg.2
+- **Software archive (Zenodo):** https://doi.org/10.5281/zenodo.22702920
+- **Development repository:** https://github.com/13256749212-oss/data
+
+> The large measurement and radio-map data products are distributed through Mendeley Data and are not duplicated in this code repository.
 
 ## Repository structure
 
 ```text
 .
-├── data/
-│   ├── raw_measurements/          # 12 raw Cellular-Pro drive-test CSV files
-│   ├── aligned_measurements/      # Measurements aligned with the local 3D scene
-│   └── processed/                 # Analysis-ready PCI–RSRP tables
-├── assets/                        # Terrain and building meshes
-├── config/                        # Base-station, PCI and coordinate-alignment metadata
+├── assets/
+│   ├── ground.ply
+│   └── ynu_chenggong_campus-001.ply
+├── config/
+│   ├── base_station_pci_mapping.csv
+│   ├── station_catalog_27stations.csv
+│   ├── coordinate_alignment.json
+│   ├── source_metadata.json
+│   ├── reference_geometry.csv
+│   ├── global_epre_calibration.json
+│   └── network_residual_calibration.json
+├── metadata/
+│   ├── spatial_reference.json
+│   ├── scene_metadata.json
+│   ├── propagation_configuration.json
+│   ├── software_environment.json
+│   ├── evaluation_reference.json
+│   └── dataset_provenance.md
 ├── workflows/
-│   ├── preprocessing/             # Coordinate alignment and measurement preprocessing
-│   ├── parameter_calibration/     # Sionna RT parameter calibration
-│   ├── radio_map/                 # Per-station and joint radio-map generation
-│   ├── evaluation/                # Measurement–simulation comparison
-│   ├── localization/              # Physical base-station localization
-│   ├── reconstruction/            # Sparse radio-map reconstruction
-│   └── visualization/             # Dataset and publication figures
-├── tools/                         # Auxiliary repository utilities
-├── docs/images/                   # Figures used in the paper and README
-├── run_pipeline.py                # Unified workflow entry point
-├── check_project_layout.py        # Repository/data-layout check
+│   ├── preprocessing/
+│   ├── parameter_calibration/
+│   ├── radio_map/
+│   └── evaluation/
+├── tools/
+├── scripts/windows/
+├── run_pipeline.py
+├── check_project_layout.py
 ├── requirements.txt
 └── environment.yml
 ```
 
-Generated products are written to `outputs/` when the workflows are run.
+Generated products are written to `outputs/` when the workflows are run. The external dataset is expected under `data/` and is intentionally excluded from this software repository.
 
-## Dataset contents
+## Released data products
 
-| Component | Main contents | Role |
+The associated Mendeley Data release contains the following data groups.
+
+| Data group | Main contents | Intended use |
 |---|---|---|
-| Measurement data | 12 raw Cellular-Pro CSV files, aligned records, long-format PCI–RSRP observations, and 1 m processed tables | Field observations used for calibration, matching, localization, and reconstruction |
-| 3D scene | `ground.ply` and `ynu_chenggong_campus-001.ply` | Terrain and major-building geometry used by Sionna RT |
-| Physical base-station reference | 27 verified physical base stations and 79 associated PCIs | Links field measurements, physical sites, sectors, and simulated transmitters |
-| Per-station radio maps | 1 m-grid radio maps for the 27 physical base stations | Sector/station-level radio propagation products |
-| Joint best-server map | 4000 m × 3000 m, 1 m grid | Network-scale best-server RSRP, station, and PCI products |
-| Matched measurement–simulation data | Co-located measured and simulated RSRP records | Direct evaluation of calibrated ray-tracing results |
-| Application workflows | Two-branch localization and sparse reconstruction | Demonstrates paired use of measurement-only and measurement–simulation data |
+| Measurement Dataset | 12 raw Cellular-Pro CSV files, aligned measurements, processed PCI–RSRP tables, and trajectory-split information | Measurement analysis, calibration, and independent evaluation |
+| Radio-map Dataset | Original per-station Sionna RT maps, measurement-filled per-station maps, raw joint best-server map, and calibration-adjusted joint map | Propagation analysis, radio-map completion, and dataset-informed coverage analysis |
+| Calibration Data | Station-parameter calibration outputs, reference geometry, network power alignment, and calibration-only residual-model outputs | Reproduction of the calibrated propagation workflow |
+| Evaluation | Calibration and held-out matched tables, overall metrics, stratified metrics, and residual-map data | Quantitative validation and error analysis |
+| Scene and Reference Data | Terrain mesh, building mesh, physical base-station locations, PCI mappings, and sector information | Spatial alignment and Sionna RT scene reconstruction |
+| Metadata | Spatial-reference, scene, propagation, software-environment, provenance, and evaluation metadata | Long-term reuse and reproducibility |
 
-## Environment
+## Reproduction environment
 
-Python 3.10 is recommended. The ray-tracing workflows require Sionna RT and benefit substantially from a CUDA-capable NVIDIA GPU.
-### pip
+The results reported in the accompanying data article were generated using:
+
+- **Python 3.10**
+- **Sionna RT 1.2.2**
+- **Blender 4.5 LTS**
+
+Create the environment with:
+
+```bash
+conda env create -f environment.yml
+conda activate sionna_env
+```
+
+or install the Python dependencies and Sionna separately:
 
 ```bash
 python -m pip install -r requirements.txt
 python -m pip install sionna==1.2.2
 ```
 
+A CUDA-capable NVIDIA GPU is recommended for ray-tracing calibration and radio-map generation.
+
+## Required data placement
+
+After downloading the dataset from Mendeley Data, place the measurement data under the repository root as follows:
+
+```text
+data/
+├── raw_measurements/
+├── aligned_measurements/        # optional if regenerated
+└── processed/                   # optional if regenerated
+```
+
+The main long-format measurement table used by the calibration and evaluation workflows is:
+
+```text
+data/processed/cell_pci_rsrp_long_27stations.csv
+```
+
+The table retains the source measurement trajectory so that complete drive-test sessions can be separated into calibration and held-out evaluation subsets.
+
+## Workflow
+
 Run all commands from the repository root.
 
-## Check the repository
+### 1. Check the repository
 
 ```bash
 python run_pipeline.py --help
 python run_pipeline.py check
 ```
 
-The layout check verifies the scene meshes, configuration files, PCI mapping, and measurement-data stage.
+The layout check verifies the required scene meshes, station/PCI configuration, coordinate metadata, and available measurement-data stage.
 
-## Workflow
-
-### 1. Prepare the drive-test measurements
-
-To rebuild the processed measurement tables from the raw Cellular-Pro CSV files:
+### 2. Prepare the drive-test measurements
 
 ```bash
 python run_pipeline.py prepare-data
 ```
 
-To regenerate existing aligned files:
+To overwrite previously generated intermediate files:
 
 ```bash
 python run_pipeline.py prepare-data --force
 ```
 
-The same workflow can also be executed step by step:
+The same preprocessing sequence can be run step by step:
 
 ```bash
 python run_pipeline.py align
@@ -93,7 +136,15 @@ python run_pipeline.py extract
 python run_pipeline.py preprocess
 ```
 
-Main processed products include:
+The spatial alignment is:
+
+```text
+WGS84 (EPSG:4326) -> EPSG:3857 -> Blender-local coordinates
+```
+
+Receiver elevation follows the local terrain at **DEM + 1.5 m**. The nominal 1 projected-m grid interval is defined in the EPSG:3857-derived local coordinate system and should not be interpreted as exactly 1 geodetic ground metre. For analyses requiring accurate metric ground distance, the original WGS84 coordinates can be reprojected to a local metric CRS such as EPSG:32648 (UTM zone 48N).
+
+Main processed outputs include:
 
 ```text
 data/aligned_measurements/
@@ -103,15 +154,7 @@ data/processed/cell_pci_rsrp_1m_calibration.csv
 data/processed/cell_pci_rsrp_2p77m_localization.csv
 ```
 
-The formal two-branch localization workflow reads:
-
-```text
-data/processed/cell_pci_rsrp_long_27stations.csv
-```
-
-The reconstruction workflow uses the 1 m processed measurement table.
-
-### 2. Calibrate the physical base stations
+### 3. Calibrate the physical base stations
 
 A quick single-station run can be used to verify the Sionna RT environment:
 
@@ -119,242 +162,236 @@ A quick single-station run can be used to verify the Sionna RT environment:
 python run_pipeline.py calibrate --stations 3 --quick
 ```
 
-Run calibration for all 27 physical base stations:
+Run the released calibration workflow for all 27 physical base stations:
 
 ```bash
 python run_pipeline.py calibrate --stations all
 ```
 
-The calibration workflow compares co-located measured and simulated RSRP for the same PCI and searches the configured base-station height, effective transmit power, azimuth, and downtilt parameters.
+The 12 complete drive-test sessions are divided by trajectory into **nine calibration trajectories** and **three held-out evaluation trajectories**. Station-parameter estimation, network-wide power alignment, and residual-model selection use the calibration trajectories only.
 
-Main results:
+The released workflow uses `config/reference_geometry.csv` for the reference station geometry during routine regeneration. Geometry can be intentionally re-estimated with the dedicated command-line option when repeating the geometry-estimation stage.
+
+Common propagation and calibration settings are:
+
+- center frequency: **2.565 GHz**
+- bandwidth: **100 MHz**
+- resource blocks: **273**
+- maximum propagation depth: **5**
+- diffraction: **enabled**
+- edge diffraction: **enabled**
+- transmitter array: generic **8 × 4** planar array with 3GPP TR 38.901-style element pattern
+- receiver surface: **DEM + 1.5 m**
+- carrier-power search: **50–55 dBm**
+- network-wide EPRE alignment: **+3.5353613488734865 dB**
+- power-regularization coefficient: **0.25**
+
+The same propagation physics are used for calibration, per-station radio maps, and the network-wide joint map.
+
+Main calibration outputs:
 
 ```text
 outputs/parameter_calibration/
 ├── all_27stations_summary.csv
 ├── estimated_initial_directions_27stations.csv
+├── calibration_validation_split.csv
+├── calibration_validation_split.json
 └── station_*/
 ```
 
-### 3. Generate the per-station radio maps
+### 4. Generate the terrain-following per-station radio maps
 
 ```bash
 python run_pipeline.py export-dem --stations all
 ```
 
-The formal radio maps use a terrain-following receiver surface at **DEM + 1.5 m**, a 1 m horizontal grid, a maximum propagation depth of 5, and edge diffraction during radio-map generation.
+Each physical station is evaluated on a nominal **512 × 512 projected-m** window with a nominal **1 projected-m** horizontal interval. The receiver surface follows the DEM at +1.5 m.
 
-Main output:
+Two per-station products are retained:
+
+- **Original Sionna RT maps:** finite simulation results only.
+- **Measurement-filled maps:** same-station measurements are inserted only where the corresponding original Sionna RT value is missing; valid simulated values are never overwritten.
+
+Cell-level provenance and measurement-availability masks are stored with the numerical products.
+
+Main output root:
 
 ```text
 outputs/bestparam_radio_maps_512m/
 ```
 
-The dataset contains both original Sionna RT radio maps and measurement-filled radio maps. Measurement filling is applied only where the Sionna RT result is missing; existing valid simulation values are not overwritten.
+### 5. Generate the network-wide raw joint best-server map
 
-### 4. Generate the joint best-server radio map
-
-Optional checks before the full run:
+Optional checks:
 
 ```bash
 python run_pipeline.py export-joint-map --dry-run
 python run_pipeline.py export-joint-map --quick
 ```
 
-Generate the full 27-station map:
+Generate the complete map:
 
 ```bash
 python run_pipeline.py export-joint-map
 ```
 
-The default network-scale map covers **4000 m × 3000 m** with a **1 m** grid and is processed in **48 tiles** of 500 m × 500 m.
+The joint product covers **4000 × 3000 nominal projected metres** and is assembled from **48 tiles** of 500 × 500 projected metres. At each finite outdoor grid cell, the strongest candidate PCI determines the raw best-server RSRP, PCI, physical-station identifier, and sector index.
 
-Main results:
+The released reference geometry contains:
+
+- **11,692,901 outdoor receiver cells**
+- **7,972,969 finite best-server cells**
+
+Main output:
 
 ```text
 outputs/joint_best_server_4000x3000/
-├── joint_best_server_27stations_4000x3000.npz
-├── joint_best_server_rsrp_4000x3000.png
-├── joint_best_station_id_4000x3000.png
-├── joint_best_pci_4000x3000.png
-├── physical_station_best_server_area.csv
-├── pci_best_server_area.csv
-└── parameters_used_27stations_79sectors.csv
+└── joint_best_server_27stations_4000x3000.npz
 ```
 
-### 5. Compare the joint map with field measurements
+### 6. Fit the calibration-only network residual model
+
+```bash
+python run_pipeline.py fit-network-residual
+```
+
+The raw Sionna RT joint map is retained unchanged. A separate calibration-adjusted joint RSRP map is generated using a low-capacity residual model selected only from the nine calibration trajectories by leave-one-trajectory-out cross-validation. The residual layer adjusts RSRP values only and does not reselect the best station or best PCI.
+
+Main outputs:
+
+```text
+outputs/network_residual_calibration/
+├── cv_candidates.csv
+└── calibration_matched_cells.csv
+
+outputs/joint_best_server_4000x3000/
+└── joint_best_server_27stations_4000x3000_calibrated.npz
+```
+
+### 7. Export cell-level provenance
+
+```bash
+python run_pipeline.py export-provenance
+```
+
+The provenance codebook is:
+
+```text
+0 = missing / invalid
+1 = original finite Sionna RT
+2 = measurement-filled same-grid value
+3 = Sionna RT plus calibration-only network residual
+```
+
+Measurement availability and calibration/evaluation observation masks are stored separately. This distinction prevents a valid simulation cell that is spatially coincident with a field measurement from being mislabeled as measurement-derived.
+
+Main outputs:
+
+```text
+outputs/joint_best_server_4000x3000/
+├── joint_best_server_27stations_4000x3000_provenance.npz
+├── joint_map_provenance_summary.json
+└── joint_map_provenance_counts.csv
+```
+
+### 8. Evaluate the raw and calibration-adjusted joint maps
 
 ```bash
 python run_pipeline.py compare-joint-map
+python run_pipeline.py compare-calibrated-map
+python run_pipeline.py export-evaluation
 ```
 
-The workflow maps the road measurements to the common 1 m joint-radio-map grid and retains only grid cells with valid measured and simulated RSRP.
+Measurements are mapped to the same nominal projected grid as the joint map. Repeated best-server observations falling in the same grid cell are median aggregated within each trajectory subset.
 
-Main results:
+The released split contains:
+
+- **8,031 calibration matched grid cells**
+- **2,380 held-out evaluation matched grid cells**
+
+Across the 2,380 held-out cells, the raw joint map has an RMSE of **16.20 dB**. The calibration-adjusted joint map yields:
+
+- RMSE: **12.06 dB**
+- MAE: **9.89 dB**
+- median absolute error: **8.77 dB**
+- mean simulation-minus-measurement bias: **−0.34 dB**
+- error standard deviation: **12.05 dB**
+- Pearson correlation: **0.227**
+- P90 absolute error: **19.26 dB**
+- P95 absolute error: **22.67 dB**
+
+The three held-out trajectories were collected during the same campaign and were available during method development. The reported result is therefore a **trajectory-disjoint internal evaluation**, not an independently acquired external test.
+
+Evaluation outputs are written under:
 
 ```text
-outputs/joint_map_measurement_comparison/
-├── matched_measurement_vs_joint_map.csv
-├── comparison_metrics.csv
-├── comparison_metrics.json
-├── comparison_diagnostics.json
-├── comparison_summary.txt
-└── comparison figures
+outputs/evaluation/
 ```
 
-The dataset article reports **10,383 valid matched grid samples** and a joint best-server RSRP RMSE of approximately **13.1 dB**.
+They include raw and calibration-adjusted comparison tables, per-station and per-PCI metrics, transmitter-distance and terrain-elevation stratification, residual-map data, and summary metrics.
 
-### 6. Run the physical base-station localization example
-
-Run the formal two-branch progressive localization experiment for all 27 physical base stations:
+### 9. Export reproducibility metadata
 
 ```bash
-python run_pipeline.py localize-sweep \
-  --point-counts 10,11,12,13,14,15 \
-  --random-trials 10 \
-  --random-seed 20260805 \
-  --station-ids all
+python run_pipeline.py export-metadata
 ```
 
-On Windows PowerShell, the same command can be entered on one line:
+The machine-readable metadata document:
 
-```powershell
-python run_pipeline.py localize-sweep --point-counts 10,11,12,13,14,15 --random-trials 10 --random-seed 20260805 --station-ids all
-```
+- the WGS84 -> EPSG:3857 -> Blender-local coordinate transformation and local origin;
+- terrain/building mesh hashes and spatial bounds;
+- scene-material assumptions;
+- antenna configuration;
+- calibration search ranges;
+- propagation solver settings;
+- SS-RSRP mapping assumptions;
+- software environment;
+- joint-map reference statistics;
+- cell-level provenance definitions; and
+- evaluation reference metrics.
 
-The two branches use the **same receiver locations** within each physical station, receiver-count stage, and seeded trial:
+## SS-RSRP mapping
 
-- **Measurement-only:** estimates the base-station position from the selected road-measured PCI–RSRP observations using the robust profiled-RSS localization procedure.
-- **Measurement–simulation:** uses the same measured observations and additionally incorporates co-located Sionna RT RSRP together with local spatial-gradient information sampled from the fixed PCI radio maps.
-
-The receiver sets are strictly nested from 10 to 15 locations. Surveyed base-station coordinates are excluded from receiver selection, candidate construction, candidate scoring, progressive updating, and trial fusion; they are introduced only after the final station estimates are obtained to calculate localization error.
-
-The unified entry point fixes the formal comparison to the two data-use branches and disables external direction priors.
-
-Main output directory:
+For the 100 MHz configuration:
 
 ```text
-outputs/localization_two_branch_rmse_only/
+N_RB = 273
+subcarriers_per_RB = 12
+N_active = 273 × 12 = 3276
+N_SSS_RE = 127
 ```
 
-Files written by the current localization workflow:
+The configured **3276 active subcarriers** are used only to convert the station carrier-power parameter to a uniform per-active-subcarrier energy-per-resource-element (EPRE) approximation on the transmitter side. They are **not** the SS-RSRP averaging count.
 
-```text
-outputs/localization_two_branch_rmse_only/
-├── localization_rmse_comparison.csv
-├── localization_two_branch_trial_diagnostics.csv
-├── measurement_only_station_results.csv
-└── measurement_simulation_station_results.csv
-```
+Measurement-comparable SS-RSRP is represented as the linear average over the **127 SSS-bearing resource elements** under the narrowband path-gain approximation documented in `metadata/propagation_configuration.json`.
 
-The primary paper-level comparison is:
+## Data-use guidance
 
-```text
-localization_rmse_comparison.csv
-```
+Use the released products according to the intended task:
 
-with the columns:
+- **Original Sionna RT maps:** propagation-model analysis and evaluation using measurements not used for fitting.
+- **Measurement-filled maps:** radio-map completion/reconstruction studies. Measurement-filled cells must not be treated as independent simulation ground truth.
+- **Calibration-adjusted joint map:** dataset-informed RSRP surface for the campus; use together with the provenance metadata.
+- **Raw and processed measurements:** measurement-driven analyses and independent reprocessing.
+- **Held-out evaluation tables:** quantitative assessment of the released raw and calibration-adjusted joint maps.
 
-```text
-Receiver locations per station
-Measurement-only RMSE (m)
-Measurement–simulation RMSE (m)
-```
-### 7. Run the sparse radio-map reconstruction example
+## Limitations
 
-The paper example uses physical base station 3 and PCI 558 over a 512 m × 512 m, 1 m-grid region:
+The dataset represents one mountainous university campus, one 5G SA/n41 configuration, one measurement-device setup, and measurements restricted to vehicle-accessible roads. The scene contains terrain and principal buildings but does not explicitly model vegetation, parked or moving vehicles, pedestrians, small street furniture, or detailed facade and roof structures.
 
-```bash
-python run_pipeline.py reconstruct \
-  --station-id 3 \
-  --pci 558 \
-  --percentages 1,2,3,4,5,6,7,8,9,10 \
-  --selection-mode voronoi-safe-adaptive-nested \
-  --simulation-mode compare \
-  --random-seed 20260805
-```
+The transmitter model uses a generic Sionna/3GPP TR 38.901-style 8 × 4 array rather than the vendor-specific commercial antenna pattern. The true base-station height, effective transmit power, azimuth, and downtilt were unavailable and were estimated from calibration measurements within bounded search ranges.
 
-PowerShell one-line form:
+Because EPSG:3857 is retained for compatibility with the distributed scene geometry, nominal projected-grid intervals should not be interpreted as exact ground distances. Analyses requiring accurate physical distance should use an appropriate local metric CRS.
 
-```powershell
-python run_pipeline.py reconstruct --station-id 3 --pci 558 --percentages 1,2,3,4,5,6,7,8,9,10 --selection-mode voronoi-safe-adaptive-nested --simulation-mode compare --random-seed 20260805
-```
+The measurement campaign does not characterize seasonal vegetation changes, weather variability, day-to-day network optimization, traffic conditions, other terminal hardware/firmware, other receiver heights, other carriers, or other frequency bands. The dataset is therefore intended primarily as a reproducible methodological benchmark for this campus environment rather than as evidence of direct generalization to all 5G propagation environments.
 
-The two branches use the same strictly nested selected measurement sets:
+## Citation and data access
 
-- **Measurement-only:** 1-nearest-neighbor interpolation from selected measured RSRP.
-- **Measurement–simulation:** robustly aligns the fixed Sionna RT map to the selected measurements and propagates the measured-minus-aligned-simulation residual using 1-nearest-neighbor assignment. Cells without valid Sionna RT values fall back to the measurement-only prediction.
+When using the dataset, please cite the Mendeley Data record associated with the data release and the accompanying Data in Brief article when available.
 
-The main evaluation is calculated over the complete valid outdoor grid of the Measurement-filled reference map.
+- Dataset DOI: https://doi.org/10.17632/7gs87p73sg.2
+- Software DOI: https://doi.org/10.5281/zenodo.22702920
 
-Default output root:
+## License
 
-```text
-outputs/radio_map_reconstruction_nn_fullgrid_two_branch/
-```
-
-For the paper example:
-
-```text
-outputs/radio_map_reconstruction_nn_fullgrid_two_branch/
-└── station_03_pci_558/
-    ├── reference_filled_map/
-    ├── percent_01/
-    ├── ...
-    ├── percent_10/
-    ├── reconstruction_single_run_metrics.csv
-    ├── reconstruction_simulation_ablation_comparison.csv
-    ├── reconstruction_simulation_ablation_metrics.csv
-    └── reconstruction_full_grid_evaluation_audit.csv
-```
-
-### 8. Generate dataset visualizations
-
-```bash
-python run_pipeline.py visualize-measurements
-python run_pipeline.py plot-output-structure
-```
-
-## Example figures
-
-### Campus 3D scene, drive-test measurements, and physical base stations
-
-<p align="center">
-  <img src="docs/images/figure3_drive_test_and_base_stations.png" width="900" alt="Drive-test measurements and physical base stations">
-</p>
-
-### Joint best-server RSRP and best-server PCI maps
-
-<p align="center">
-  <img src="docs/images/figure4_joint_best_server_radio_map.png" width="900" alt="Joint best-server radio map and best-server PCI map">
-</p>
-
-### Sparse radio-map reconstruction
-
-<p align="center">
-  <img src="docs/images/figure8_radio_map_reconstruction.png" width="900" alt="Radio-map reconstruction example">
-</p>
-
-## Data-generation summary
-
-```text
-Raw drive-test measurements
-        ↓
-WGS84 → EPSG:3857 → local Blender coordinate alignment
-        ↓
-DEM-based receiver elevation (local terrain + 1.5 m)
-        ↓
-Multi-PCI / RSRP expansion and spatial aggregation
-        ↓
-Field-verified 27-station / 79-PCI association
-        ↓
-Sionna RT base-station parameter calibration
-        ↓
-Per-station 1 m radio maps
-        ↓
-27-station joint best-server radio map
-        ↓
-Measurement–simulation spatial matching
-        ↓
-Localization and radio-map reconstruction examples
-```
+Please follow the license terms stated in the Mendeley Data record and the Zenodo software archive.
