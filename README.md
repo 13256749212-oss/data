@@ -377,11 +377,3 @@ The transmitter model uses a generic Sionna/3GPP TR 38.901-style 8 × 4 array ra
 Because EPSG:3857 is retained for compatibility with the distributed scene geometry, nominal projected-grid intervals should not be interpreted as exact ground distances. Analyses requiring accurate physical distance should use an appropriate local metric CRS.
 
 The measurement campaign does not characterize seasonal vegetation changes, weather variability, day-to-day network optimization, traffic conditions, other terminal hardware/firmware, other receiver heights, other carriers, or other frequency bands. The dataset is therefore intended primarily as a reproducible methodological benchmark for this campus environment rather than as evidence of direct generalization to all 5G propagation environments.
-
-## Citation and data access
-
-When using the dataset, please cite the Mendeley Data record associated with the data release and the accompanying Data in Brief article when available.
-
-## License
-
-Please follow the license terms stated in the Mendeley Data record and the Zenodo software archive.
