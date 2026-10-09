@@ -4,10 +4,6 @@ This repository provides the processing and reproducibility code accompanying th
 
 The dataset combines **12 vehicle-based 5G NR drive-test sessions**, **3D terrain and building geometry**, **27 physical base stations associated with 79 verified Physical Cell Identifiers (PCIs)**, and **Sionna RT radio-propagation products** in a common spatial reference. The released workflow supports measurement preprocessing, station-parameter calibration, terrain-following per-station radio-map generation, network-wide best-server map generation, calibration-only network residual modeling, cell-level provenance export, and trajectory-disjoint quantitative evaluation.
 
-- **Dataset (Mendeley Data):** https://doi.org/10.17632/7gs87p73sg.2
-- **Software archive (Zenodo):** https://doi.org/10.5281/zenodo.22702920
-- **Development repository:** https://github.com/13256749212-oss/data
-
 > The large measurement and radio-map data products are distributed through Mendeley Data and are not duplicated in this code repository.
 
 ## Repository structure
@@ -388,9 +384,6 @@ The measurement campaign does not characterize seasonal vegetation changes, weat
 ## Citation and data access
 
 When using the dataset, please cite the Mendeley Data record associated with the data release and the accompanying Data in Brief article when available.
-
-- Dataset DOI: https://doi.org/10.17632/7gs87p73sg.2
-- Software DOI: https://doi.org/10.5281/zenodo.22702920
 
 ## License
 
