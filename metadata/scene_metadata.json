@@ -1,0 +1,58 @@
+{
+  "terrain_mesh": {
+    "path": "assets/ground.ply",
+    "sha256": "a4718a5c8235a61b9bfbc0b0409bb50b6d28e9f65288b273c930366f1e47b969",
+    "vertex_count": 4225,
+    "face_count": 8192,
+    "bounds_xyz": [
+      [
+        -1858.0517578125,
+        -1458.0201416015625,
+        1919.5062255859375
+      ],
+      [
+        2422.42236328125,
+        1599.46142578125,
+        2109.0400390625
+      ]
+    ],
+    "extent_xyz": [
+      4280.47412109375,
+      3057.4815673828125,
+      189.5338134765625
+    ]
+  },
+  "building_mesh": {
+    "path": "assets/ynu_chenggong_campus-001.ply",
+    "sha256": "598e9a8e80e1e4c8050eded793243325f79af4f9e86763b6a9674e4208b49fed",
+    "vertex_count": 21168,
+    "face_count": 7056,
+    "bounds_xyz": [
+      [
+        -1100.5791015625,
+        -638.2017211914062,
+        1942.4332275390625
+      ],
+      [
+        1088.6552734375,
+        935.7338256835938,
+        2016.59423828125
+      ]
+    ],
+    "extent_xyz": [
+      2189.234375,
+      1573.935546875,
+      74.1610107421875
+    ]
+  },
+  "ground_material": "itu_wet_ground",
+  "building_material": "itu_concrete",
+  "source_provenance": {
+    "dem_source": "Web-Mercator elevation data obtained through a QGIS DEM/elevation plugin and used to build the terrain reference for the campus scene.",
+    "dem_source_native_resolution": "The native resolution of the downloaded elevation tiles was not separately recorded in the acquisition metadata.",
+    "released_receiver_surface_sampling_m": 1.0,
+    "released_receiver_height_definition": "receiver_z = interpolated terrain elevation + 1.5 m",
+    "building_model_source": "Campus buildings manually modeled using Web-Mercator-projected satellite imagery as the horizontal reference and the terrain/ground surface as the vertical reference.",
+    "building_model_level_of_detail": "Simplified campus-scale building mass geometry for propagation simulation; no standardized CityGML LoD label was assigned, and facade/roof-detail reconstruction is not claimed."
+  }
+}

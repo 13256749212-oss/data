@@ -1,0 +1,23 @@
+{
+  "source_crs": "EPSG:4326",
+  "projected_crs": "EPSG:3857",
+  "scene_origin_projected_x": 11449067.407478333,
+  "scene_origin_projected_y": 2854699.9117279053,
+  "blender_x_scale": 1.0,
+  "blender_y_scale": 1.0,
+  "blender_x_offset_m": 0.0,
+  "blender_y_offset_m": 0.0,
+  "receiver_height_agl_m": 1.5,
+  "recommended_metric_crs_for_external_distance_analysis": "EPSG:32648",
+  "grid_interval_interpretation": "Nominal map spacing is expressed in the internal EPSG:3857-derived Blender local coordinate system; it is not an exact geodetic ground-distance interval.",
+  "axis_definition": {
+    "blender_x": "EPSG:3857 easting minus scene origin X, then scale/offset",
+    "blender_y": "EPSG:3857 northing minus scene origin Y, then scale/offset",
+    "blender_z": "terrain elevation from ground.ply; receiver_z = ground_z + 1.5 m"
+  },
+  "transform_formula": {
+    "x_local": "(x_EPSG3857 - scene_origin_projected_x) * blender_x_scale + blender_x_offset_m",
+    "y_local": "(y_EPSG3857 - scene_origin_projected_y) * blender_y_scale + blender_y_offset_m",
+    "receiver_z": "terrain_z_from_ground_mesh + receiver_height_agl_m"
+  }
+}

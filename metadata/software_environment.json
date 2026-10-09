@@ -1,0 +1,8 @@
+{
+  "python": "3.10",
+  "sionna_rt": "1.2.2",
+  "blender": "4.5 LTS",
+  "requirements_file": "requirements.txt",
+  "environment_file": "environment.yml",
+  "note": "Declared reproduction environment used by the manuscript workflow; this metadata does not report the interpreter of the machine that regenerates the JSON files."
+}

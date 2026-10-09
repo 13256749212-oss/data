@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "status": "trajectory_disjoint_internal_evaluation",
+  "evaluation_subset": "validation",
+  "split_unit": "source_file_complete_trajectory",
+  "validation_source_files": [
+    "NONE-DT-2026-07-25_11-51-42-中国移动-1283BC053EFED3D4-ms1(3)_with_blender_xyz.csv",
+    "NONE-DT-2026-07-25_15-13-44-中国移动-1283BC053EFED3D4-ms1(1)_with_blender_xyz.csv",
+    "NONE-DT-2026-07-25_15-37-14-中国移动-1283BC053EFED3D4-ms1(2)_with_blender_xyz.csv"
+  ],
+  "global_epre_offset_db": 3.5353613488734865,
+  "global_epre_source_subset": "calibration_trajectories_only",
+  "validation_data_used_for_calibration": false,
+  "station_specific_epre_offset_fitted": false,
+  "joint_map": {
+    "station_count": 27,
+    "sector_count": 79,
+    "shape": [
+      3000,
+      4000
+    ],
+    "outdoor_cell_count": 11692901,
+    "finite_best_server_cell_count": 7972969
+  },
+  "calibration_model_selection": {
+    "matched_grid_cells": 8031,
+    "identity_loto_rmse_db": 15.322631871870279,
+    "selected_loto_rmse_db": 12.146222610441068,
+    "selected_model": "affine_rsrp_distance",
+    "ridge": 10.0
+  },
+  "raw_validation_metrics": {
+    "matched_map_cell_count": 2380,
+    "rmse_db": 16.198487837554616
+  },
+  "calibrated_validation_metrics": {
+    "matched_map_cell_count": 2380,
+    "rmse_db": 12.057474493817669,
+    "mae_db": 9.89045125528544,
+    "median_absolute_error_db": 8.770393371582031,
+    "bias_sim_minus_measured_db": -0.3351350059829841,
+    "error_standard_deviation_db": 12.05534899232692,
+    "bias_corrected_rmse_db": 12.052816089894861,
+    "p90_absolute_error_db": 19.262937927246092,
+    "p95_absolute_error_db": 22.67194152832031,
+    "pearson_correlation": 0.22712140602492284
+  },
+  "trajectory_balance": {
+    "matched_counts": [
+      2077,
+      44,
+      259
+    ],
+    "dominant_trajectory_fraction": 0.8726890756302521,
+    "warning": "The held-out set is trajectory-disjoint but not sample-balanced; the largest trajectory contributes about 87.27% of matched map cells."
+  },
+  "interpretation": "Trajectory-disjoint internal evaluation from the same measurement campaign; it is not described as an independently acquired external test."
+}
