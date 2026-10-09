@@ -3,9 +3,6 @@
 This repository provides the processing and reproducibility code accompanying the campus-scale 5G NR radio propagation dataset collected at the Chenggong Campus of Yunnan University, Kunming, China.
 
 The dataset combines **12 vehicle-based 5G NR drive-test sessions**, **3D terrain and building geometry**, **27 physical base stations associated with 79 verified Physical Cell Identifiers (PCIs)**, and **Sionna RT radio-propagation products** in a common spatial reference. The released workflow supports measurement preprocessing, station-parameter calibration, terrain-following per-station radio-map generation, network-wide best-server map generation, calibration-only network residual modeling, cell-level provenance export, and trajectory-disjoint quantitative evaluation.
-
-> The large measurement and radio-map data products are distributed through Mendeley Data and are not duplicated in this code repository.
-
 ## Repository structure
 
 ```text
