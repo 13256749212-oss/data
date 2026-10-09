@@ -1,0 +1,75 @@
+project:
+  output_dir: ../../outputs/parameter_calibration
+  measurement_csv: ../../data/processed/cell_pci_rsrp_long_27stations.csv
+scene:
+  ground_ply: ../../assets/ground.ply
+  building_ply: ../../assets/ynu_chenggong_campus-001.ply
+  generated_xml: ../../outputs/work/generated_calibration_scene.xml
+  ground_material: itu_wet_ground
+  building_material: itu_concrete
+radio:
+  frequency_hz: 2565000000.0
+  bandwidth_hz: 100000000.0
+  nr_band: 41
+  center_arfcn_dl: 513000
+  ssb_arfcn_dl: 504990
+  n_rb: 273
+  subcarriers_per_rb: 12
+  ss_rsrp_mode: 3gpp_sss_re_uniform_epre_narrowband_global_calibrated
+  sss_re_count: 127
+  sss_re_epre_offset_db: 3.5353613488734865
+  rx_height_agl_m: 1.5
+  max_depth: 5
+  samples_per_tx_search: 10000000
+  samples_per_tx_final: 10000000
+  seed: 20260805
+  los: true
+  specular_reflection: true
+  diffuse_reflection: true
+  refraction: true
+  diffraction: true
+  edge_diffraction: true
+antenna:
+  num_rows: 8
+  num_cols: 4
+  vertical_spacing: 0.5
+  horizontal_spacing: 0.5
+  pattern: tr38901
+  polarization: VH
+map:
+  size_x_m: 512
+  size_y_m: 512
+  cell_size_m: 1.0
+  display_min_dbm: -120.0
+  display_max_dbm: -40.0
+search:
+  initial_height_agl_m: 30.0
+  height_min_m: 20.0
+  height_max_m: 35.0
+  height_step_m: 1.0
+  azimuth_offset_min_deg: -180.0
+  azimuth_offset_max_deg: 180.0
+  azimuth_offset_step_deg: 5.0
+  downtilt_delta_min_deg: -15.0
+  downtilt_delta_max_deg: 15.0
+  downtilt_delta_step_deg: 1.0
+  power_min_dbm: 50.0
+  power_max_dbm: 55.0
+  power_step_db: 1.0
+  passes: 1
+  metric: reliability_balanced_pci_rmse_db
+  objective_mode: reliability_balanced_pci_rmse
+  power_regularization_lambda: 0.25
+  power_regularization_anchor_dbm: 52.5
+  reliability_min_trajectory_points: 20
+  reliability_trajectory_weight_cap: 250
+  reliability_min_pci_points: 3
+  reliability_pci_weight_cap: 100
+  geometry_reference_enabled: false
+  geometry_regularization_lambda_db2: 1.0
+  min_points_total: 12
+  min_points_per_pci: 3
+  max_measurement_cells_per_pci: 2000
+  strong_signal_sampling_fraction: 0.35
+  sparse_surface_cell_size_m: 1.0
+  cache_maps: true
