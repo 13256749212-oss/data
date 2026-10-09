@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "method": "calibration_only_network_residual_transfer_loto",
+  "source_subset": "calibration_trajectories_only",
+  "validation_data_used": false,
+  "calibration_trajectory_count": 9,
+  "calibration_source_files": [
+    "NONE-DT-2026-07-25_10-28-29-中国移动-1283BC053EFED3D4-ms1(3)_with_blender_xyz.csv",
+    "NONE-DT-2026-07-25_10-57-40-中国移动-1283BC053EFED3D4-ms1(3)_with_blender_xyz.csv",
+    "NONE-DT-2026-07-25_12-33-15-中国移动-1283BC053EFED3D4-ms1(3)_with_blender_xyz.csv",
+    "NONE-DT-2026-07-25_13-21-50-中国移动-1283BC053EFED3D4-ms1(3)_with_blender_xyz.csv",
+    "NONE-DT-2026-07-25_14-09-31-中国移动-1283BC053EFED3D4-ms1(3)_with_blender_xyz.csv",
+    "NONE-DT-2026-07-25_14-46-19-中国移动-1283BC053EFED3D4-ms1(1)_with_blender_xyz.csv",
+    "NONE-DT-2026-07-25_15-15-47-中国移动-1283BC053EFED3D4-ms1(2)_with_blender_xyz.csv",
+    "NONE-DT-2026-07-25_15-21-24-中国移动-1283BC053EFED3D4-ms1(2)_with_blender_xyz.csv",
+    "NONE-DT-2026-07-25_15-29-15-中国移动-1283BC053EFED3D4-ms1(2)_with_blender_xyz.csv"
+  ],
+  "validation_source_files_not_used": [
+    "NONE-DT-2026-07-25_11-51-42-中国移动-1283BC053EFED3D4-ms1(3)_with_blender_xyz.csv",
+    "NONE-DT-2026-07-25_15-13-44-中国移动-1283BC053EFED3D4-ms1(1)_with_blender_xyz.csv",
+    "NONE-DT-2026-07-25_15-37-14-中国移动-1283BC053EFED3D4-ms1(2)_with_blender_xyz.csv"
+  ],
+  "selection_rule": "minimum equal-trajectory mean LOTO RMSE; identity retained unless gain >= min_cv_gain_db",
+  "min_cv_gain_db": 0.05,
+  "selected_cv": {
+    "model": "affine_rsrp_distance",
+    "ridge": 10.0,
+    "mean_fold_rmse_db": 12.146222610441068,
+    "median_fold_rmse_db": 11.390134354897624,
+    "mean_abs_fold_bias_db": 4.393588331602153,
+    "mean_fold_mae_db": 9.944226889298438,
+    "fold_count": 9,
+    "identity_cv_rmse_db": 15.322631871870279,
+    "cv_gain_vs_identity_db": 3.1764092614292103
+  },
+  "final_model": {
+    "model": "affine_rsrp_distance",
+    "ridge": 10.0,
+    "coefficients": [
+      2.5301184555017424,
+      -10.649756762082422,
+      -8.60533151094926
+    ],
+    "correction_clip_db": 12.0,
+    "calibration_raw_rmse_db": 13.765520749009877,
+    "calibration_raw_bias_db": 5.7136919877787715,
+    "calibration_raw_mae_db": 10.867516665101839,
+    "calibration_corrected_rmse_db": 11.44722723712509,
+    "calibration_corrected_bias_db": -1.9796253836354418,
+    "calibration_corrected_mae_db": 9.241194673616357
+  },
+  "best_station_and_pci_are_not_reselected": true,
+  "station_specific_offset_fitted": false,
+  "raw_joint_map": "outputs/joint_best_server_4000x3000/joint_best_server_27stations_4000x3000.npz"
+}

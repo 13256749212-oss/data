@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "method": "reliability_balanced_calibration_only_loto_selected_then_geometry_frozen",
+  "source_subset": "calibration_trajectories_only",
+  "validation_data_used": false,
+  "station_specific_offset_fitted": false,
+  "global_epre_offset_db": 3.5353613488734865,
+  "power_regularization_lambda": 0.25,
+  "power_regularization_anchor_mode": "per_station_reference_power",
+  "reference_geometry_file": "config/reference_geometry.csv",
+  "geometry_mode": "frozen_reference_geometry",
+  "reliability_min_trajectory_points": 20,
+  "reliability_trajectory_weight_cap": 250,
+  "reliability_min_pci_points": 3,
+  "reliability_pci_weight_cap": 100,
+  "selected_cv_rmse_db": 17.245349956196968,
+  "selected_cv_bias_db": -0.1038252593562694,
+  "note": "Selected using calibration-only reliability-weighted leave-one-trajectory-out cross-validation. Reference station geometry is fixed during the network-wide power-alignment selection; held-out evaluation metrics are not used for parameter selection."
+}

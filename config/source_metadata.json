@@ -1,0 +1,8 @@
+{
+  "dem_source": "Web-Mercator elevation data obtained through a QGIS DEM/elevation plugin and used to build the terrain reference for the campus scene.",
+  "dem_source_native_resolution": "The native resolution of the downloaded elevation tiles was not separately recorded in the acquisition metadata.",
+  "released_receiver_surface_sampling_m": 1.0,
+  "released_receiver_height_definition": "receiver_z = interpolated terrain elevation + 1.5 m",
+  "building_model_source": "Campus buildings manually modeled using Web-Mercator-projected satellite imagery as the horizontal reference and the terrain/ground surface as the vertical reference.",
+  "building_model_level_of_detail": "Simplified campus-scale building mass geometry for propagation simulation; no standardized CityGML LoD label was assigned, and facade/roof-detail reconstruction is not claimed."
+}
